@@ -22,4 +22,4 @@ int main(void)
 }
 ```
 
-![Hello World!](/_images/HelloWorld.png)
+![Hello World!](/assets/img/HelloWorld.png)
