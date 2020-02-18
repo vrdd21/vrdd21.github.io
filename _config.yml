@@ -4,7 +4,7 @@ email: vrdd21@naver.com
 description: > # this means to ignore newlines until "show_exerpts:"
   I am a graduate student of Seoul National University from 2020.03.01. If you find any bugs in my codes, please feel free to tell me by using disqus.
 show_excerpts: true # set to true to show excerpts on the homepage
-baseurl: 
+baseurl:
 
 # Minima date format
 # refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
@@ -13,6 +13,7 @@ sass:
 
 permalink: /posts/:title/
 texture:
+  disqus_shortname: games
   title: Kim Ji Soo
   tagline: Developer.
   date_format: "%b %-d, %Y"
@@ -22,12 +23,11 @@ texture:
 
   # generate social links in footer
   social_links:
-    twitter: 
+    twitter:
     github:  vrdd21
-    linkedIn: 
+    linkedIn:
     rss: rss
-  disqus_shortname: chats
- 
+
 
 # If you want to link only specific pages in your header, uncomment
 # this and add the path to the pages in order as they should show up
