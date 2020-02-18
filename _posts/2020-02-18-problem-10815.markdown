@@ -1,4 +1,12 @@
-# Problem #10815 in baekjoon
+---
+layout: post
+title:  "Problem #10815"
+description:
+date:   2020-02-18 17:57:00 +0530
+categories: C++
+---
+
+### 숫자 카드
 ###### https://www.acmicpc.net/problem/10815
 
 ### 문제 유형
