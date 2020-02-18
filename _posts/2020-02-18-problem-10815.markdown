@@ -46,7 +46,7 @@ M 개의 정수와 N 개의 정수를 일일이 비교한다면 시간 복잡도
 
 따라서 N을 정렬한 후 그 안에서 M 개의 정수를 이분 탐색하면 시간 복잡도는 O(M*log(N)), 285만 번의 계산 횟수가 나와 시간 제한을 만족할 수 있다.
 
-** 일반 이분탐색 **
+**일반 이분탐색**
 ```
 #include <iostream>
 #include <algorithm>
@@ -128,8 +128,133 @@ int main(void)
 
 시간을 더 줄일 수는 없을까? 마침 하나의 아이디어가 떠올랐다.
 
+N개의 정수, M 개의 정수를 각각 N 집합, M 집합이라 칭하겠다.
+1. N 집합과 M 집합을 정렬한다.
+2. M 집합의 중간값을 target으로 N 집합에 대해 이분 탐색을 진행한다.
+3. 만약 M 집합의 중간값을 N 집합에서 찾았다면 N 집합은 해당 인덱스에서 왼쪽과 오른쪽 서브셋으로 나누고 M 집합은 target으로 설정된 중간값에서 왼쪽과 오른쪽 서브셋을 나눈다.
+4. 만약 찾지 못했다면 M개의 중간값에서만 왼쪽과 오른쪽 서브셋을 나눈다.
+5. 각각의 서브셋에 대해 1~4를 반복한다.
+
+이를 통해 시간복잡도 O(log(n)*log(m))을 달성할 수 있을거라 생각했다.
+
 ![first image](/assets/img/10815_1.png)
 ![second image](/assets/img/10815_2.png)
+
+```
+#include <iostream>
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+
+using namespace std;
+
+class Card
+{
+public:
+	int number;
+	int origin_order;
+};
+
+bool cmp(const Card& a, const Card& b)
+{
+	if (a.number < b.number)
+		return true;
+	else
+		return false;
+}
+
+/*
+	여기서 low, high는 c의 값이다.
+*/
+int BinarySearch(int low, int high, int target, Card* c)
+{
+	int med = (low + high) / 2;
+	if (low > high)
+		return -1;
+
+	if (c[med].number == target)
+		return med;
+	else if (c[med].number < target)
+		return BinarySearch(med + 1, high, target, c);
+	else
+		return BinarySearch(low, med - 1, target, c);
+}
+
+/*
+*/
+void BinaryFilter(int low_c, int high_c, int low_filter, int high_filter, int* answer, Card* c, Card* filter)
+{
+	int med = (low_filter + high_filter) / 2;
+	int limit = BinarySearch(low_c, high_c, filter[med].number, c);
+
+	if (low_c > high_c)
+		return;
+
+	if (low_filter > high_filter)
+		return;
+
+	if (limit == -1)
+	{
+		/*
+			c의 공간은 그대로 하되 filter는 subset으로 나눈다.
+		*/
+		answer[filter[med].origin_order] = 0;
+		BinaryFilter(low_c, high_c, low_filter, med - 1, answer, c, filter);
+		BinaryFilter(low_c, high_c, med + 1, high_filter, answer, c, filter);
+	}
+	else
+	{
+		/*
+			c의 공간과 filter의 공간을 각각 subset한 후 각각 다시 매칭시작
+		*/
+		answer[filter[med].origin_order] = 1;
+		BinaryFilter(low_c, limit - 1, low_filter, med - 1, answer, c, filter);
+		BinaryFilter(limit + 1, high_c, med + 1, high_filter, answer, c, filter);
+	}
+}
+
+int main(void)
+{
+	int n, m;
+	int* answer;
+	Card *c, *filter;
+
+	scanf("%d", &n);
+
+	c = new Card[n];
+
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d", &c[i].number);
+		c[i].origin_order = i;
+	}
+
+	scanf("%d", &m);
+
+	answer = new int[m] {100, };
+	filter = new Card[m];
+
+	for (int i = 0; i < m; i++)
+	{
+		scanf("%d", &filter[i].number);
+		filter[i].origin_order = i;
+	}
+
+	sort(c, c + n, cmp);
+	sort(filter, filter + m, cmp);
+
+	BinaryFilter(0, n-1, 0, m-1, answer, c, filter);
+
+	for (int i = 0; i < m; i++)
+		printf("%d\n", answer[i]);
+
+	return 0;
+}
+```
+
+결과는 참담하게 356 ms.
+
+아무래도 함수를 너무 많이 쓴 것이 요인이 아닐까 생각해본다.
 
 - - -
 
